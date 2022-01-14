@@ -1,24 +1,25 @@
+import NavLeft from './common/navLeft';
 import Header from './components/header';
 import Footer from './components/footer';
 import { Row,Col } from 'antd';
+import "./assets/css/app.less"
 import 'antd/dist/antd.min.css'
-import "./assets/app.less"
 function App() {
   return (
-    <div className="App">
-      <Row>
-        <Col span={3}>
-          left
+    <>
+      <Row className='container'>
+        <Col span={3} className='nav-left'>
+        <NavLeft/>
         </Col>
-        <Col span={21}>
+        <Col span={21} className='main'>
           <Header/>
-          <Row>
+          <Row className='content'>
             
           </Row>
           <Footer/>
         </Col>
       </Row>
-    </div>
+      </>
   );
 }
 
