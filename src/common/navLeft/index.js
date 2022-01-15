@@ -27,7 +27,7 @@ export default memo(function NavLeft() {
     return (
         <div>
             <div className='logo'>
-                <img src={logo} alt='' />
+                <img className='header-logo' src={logo} alt='' />
                 <h1>哈啰单车</h1>
             </div>
             <Menu onClick={handleClick} mode="vertical" theme='dark'>
