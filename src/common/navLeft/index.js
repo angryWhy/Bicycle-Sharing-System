@@ -5,6 +5,7 @@ import { Menu } from 'antd'
 import "./index.less"
 //数据
 import routes from '../../config/menuConfig'
+import { Link } from 'react-router-dom'
 
 export default memo(function NavLeft() {
     const { SubMenu } = Menu;
@@ -20,7 +21,7 @@ export default memo(function NavLeft() {
                     </SubMenu>
                 )
             }else{
-                return <Menu.Item key={item.title}>{item.title}</Menu.Item>
+                return <Menu.Item key={item.title}><Link to={item.link}>{item.title}</Link></Menu.Item>
             }
         })
     }
