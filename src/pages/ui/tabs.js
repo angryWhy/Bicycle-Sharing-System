@@ -40,8 +40,9 @@ export default memo(function Tabsabout() {
            case "add":
                dispatch({type:"add",item:{title: 'New Tab', content: 'New Tab Pane',key:`${state.tabList.length+1}`}});
                setActive(`${state.tabList.length+1}`)
-           case "remove":
-               
+               break
+            default:
+            return state
        }
    }
    function handleKey(activeKey) {
