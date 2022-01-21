@@ -1,7 +1,7 @@
 import NavLeft from './common/navLeft';
 import Header from './components/header';
 import Footer from './components/footer';
-import AntdButton from './pages/form/register';
+import AntdButton from './pages/table/basictable';
 import { Row,Col } from 'antd';
 import "./assets/css/app.less"
 import 'antd/dist/antd.min.css'
