@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useState } from 'react';
-import { Card, Table, Button, Form, Select, Row, Col, DatePicker } from 'antd';
+import { Card, Table, Button, Form, Select, Row, Col, DatePicker, Modal } from 'antd';
 import 'moment/locale/zh-cn';
 import locale from 'antd/lib/date-picker/locale/zh_CN';
 import axios from 'axios';
@@ -9,7 +9,8 @@ export default memo(function Order() {
     const [data, setData] = useState();
     const [show,setShow] = useState(false);
     const [selectedRowKeys,setSelect] = useState()
-    const [selectItem,setSelectItem] = useState()
+    const [selectItem,setSelectItem] = useState(null)
+    const [cancleData,setCancleData] = useState();
     const columns = [
         {
             title: "订单编号",
@@ -83,11 +84,46 @@ export default memo(function Order() {
 
     }
     const rowCheckSelection={
-        type:"checkbox",
+        type:"radio",
         selectedRowKeys,
         onChange:(selectedRowKeys,selectedRows)=>{
             setSelect(selectedRowKeys)
             setSelectItem(selectedRows)
+        }
+    }
+    const handleDetail =() =>{
+        setShow(true)
+        // axios.get("/api/orderData.json").then(
+        //     res=>{
+        //         console.log(res.data.result.list[0]);
+        //         setCancleData(res.data.result.list[0])
+        //     }
+        // )
+        console.log(selectItem);
+        const newData=Object.assign({},selectItem)
+        setCancleData(newData)
+        console.log(cancleData);
+    }
+    const handleCancleOk= ()=>{
+        
+        //网络请求
+        Modal.success({
+            title:"订单结束成功"
+        })
+        setShow(false)
+    }
+    const handleDetailCancel = ()=>{
+        setShow(false)
+        Modal.error({
+            title:"订单结束失败"
+        })
+    } 
+    const Detail = () =>{
+        if(!selectItem){
+            Modal.info({
+                title:"提示",
+                content:"请选择一条信息"
+            })
         }
     }
     return <div>
@@ -128,8 +164,8 @@ export default memo(function Order() {
             </Form>
         </Card>
         <Card style={{ marginTop: "10px" }}>
-            <Button type='primary'>订单详情</Button>
-            <Button type='primary' onClick={handleConfirm}>结束订单</Button>
+            <Button type='primary' style={{ marginLeft: "20px" }} onClick={e=>{Detail()}}>订单详情</Button>
+            <Button type='primary' style={{ marginLeft: "20px" }} onClick={e=>{handleDetail()}}>结束订单</Button>
         </Card>
         <div className='content-wrap'>
             <Table columns={columns}  dataSource={data}  rowSelection={rowCheckSelection}  onRow={(record,index) => {
@@ -138,5 +174,21 @@ export default memo(function Order() {
                     };
                   }}/>
         </div>
+        <Modal visible={show} title="结束订单" onOk={e=>{handleCancleOk()}} onCancel={e=>{handleDetailCancel()}}>
+            <Form>
+                <Form.Item label="车辆编号">
+                    {selectItem?selectItem.bike_sn:null}
+                </Form.Item>
+                <Form.Item label="剩余电量">
+                    80%
+                </Form.Item>
+                <Form.Item label="行程开始时间">
+                    {selectItem?selectItem.start_time:null}
+                </Form.Item>
+                <Form.Item label="当前位置">
+                    {selectItem?selectItem.bike_sn:null}
+                </Form.Item>
+            </Form>
+        </Modal>
     </div>;
 });

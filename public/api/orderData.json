@@ -1,0 +1,14 @@
+{
+    "code":0,
+    "msg":"",
+    "result":{
+        "list":[
+        {
+            "bike_sn":"80016154",
+            "bike_battery":"80%",
+            "start_time":"2022-1-12",
+            "pos":"city"
+        }
+               ]
+            }
+}
