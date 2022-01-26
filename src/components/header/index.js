@@ -5,7 +5,7 @@ import { formateDate } from '../../utils/format-Date'
 import { Col, Row } from 'antd'
 import "./index.less"
 export default memo(function Header() {
-    const [userName] = useState("起风了")
+    const [userName] = useState("userName")
     const [date, setDate] = useState(formateDate(new Date()))
     useEffect(() => {
         setInterval(() => {

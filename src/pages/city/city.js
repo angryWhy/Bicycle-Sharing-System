@@ -1,5 +1,5 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
-import { Card, Table, Badge, Modal, message, Button, Form, Input, Select, Row, Col } from 'antd';
+import React, { forwardRef,  useEffect, useRef, useState } from 'react';
+import { Card, Table,  Modal,  Button, Form,  Select, Row, Col } from 'antd';
 import axios from 'axios';
 const { Option } = Select;
 const City = (props) => {
@@ -50,11 +50,18 @@ const City = (props) => {
         setShow(true)
     }
     const handleSubmit= () =>{
-
+        const modalRes=modalRef.current.getFieldsValue(["city","mode","usebic"]);
+        console.log(modalRes);
+        //网络请求
+        Modal.success({
+            title:"成功",
+            content:"成功开通"
+        })
+        setShow(false)
     }
     const [datares, setDatares] = useState();
     const [show,setShow] = useState(false);
-    const modalChild=useRef();
+    const modalRef=useRef();
     useEffect(() => {
       axios.get("/api/city.json").then(
           res=>{
@@ -67,7 +74,6 @@ const City = (props) => {
           }
       )
     }, []);
-    
     return (<div>
         <Card>
             <Main />
@@ -77,14 +83,14 @@ const City = (props) => {
         </Card>
         <Table columns={columns} dataSource={datares} />
         <Modal title="开通城市" visible={show} onCancel={e=>{setShow(false)}} onOk={e=>{handleSubmit()}}>
-            <Content/>
+            <Content ref={modalRef}/>
         </Modal>
     </div>
     )
 }
-const Main = memo(function City() {
+const Main =function City(props) {
     return <div>
-        <Form>
+        <Form >
             <Row>
                 <Col span={4}>
                     <Form.Item
@@ -146,8 +152,8 @@ const Main = memo(function City() {
             </Row>
         </Form>
     </div>;
-});
-const Content= () =>{
+};
+const Content= forwardRef( function C(props,ref) {
     const formItemLayout = {
         labelCol:{
             span:6
@@ -156,22 +162,25 @@ const Content= () =>{
             span:10
         }
     }
+    const modalFinish =(value) =>{
+        console.log(value);
+    } 
     return(
-        <Form layout='horizontal' >
-            <Form.Item label="选择城市" {...formItemLayout}>
+        <Form layout='horizontal' ref={ref} onFinish={e=>{modalFinish()}}>
+            <Form.Item label="选择城市" {...formItemLayout} name="city">
                 <Select>
                     <Option value="">全部</Option>
                     <Option value="1">北京</Option>
                     <Option value="2">上海</Option>
                 </Select>
             </Form.Item>
-            <Form.Item label="加盟模式" {...formItemLayout}>
+            <Form.Item label="加盟模式" {...formItemLayout} name="mode">
                 <Select>
                     <Option value="1">自营</Option>
                     <Option value="2">加盟</Option>
                 </Select>
             </Form.Item>
-            <Form.Item label="用车模式" {...formItemLayout}>
+            <Form.Item label="用车模式" {...formItemLayout} name="usebic">
                 <Select>
                     <Option value="1">指定停车点</Option>
                     <Option value="2">禁停区</Option>
@@ -179,5 +188,5 @@ const Content= () =>{
             </Form.Item>
         </Form>
     )
-}
+})
 export default City
