@@ -8,10 +8,11 @@ export default memo(function Detail() {
     useEffect(() => {
         axios.get("./api/order/detail.json").then(res => {
             setData(res.data.result)
-            renderMap(res.data.result.position_list)
+            console.log(res.data.result.area);
+            renderMap(res.data.result.position_list, res.data.result.area)
         })
     }, []);
-    const renderMap = (pos) => {
+    const renderMap = (pos, area) => {
         // eslint-disable-next-line no-undef
         var map = new window.BMapGL.Map("orderDetailMap");
         // 创建地图实例 
@@ -27,7 +28,7 @@ export default memo(function Detail() {
         map.centerAndZoom(point, 15);
         if (pos.length > 0) {
             let arr = pos[0]
-            let arr2 = pos[[pos.length-1]]
+            let arr2 = pos[[pos.length - 1]]
             console.log(arr2);
             console.log(arr);
             // eslint-disable-next-line no-undef
@@ -38,7 +39,7 @@ export default memo(function Detail() {
             })
 
             // eslint-disable-next-line no-undef
-            let startMarker = new window.BMapGL.Marker(startPoint,{icon:startIcon})
+            let startMarker = new window.BMapGL.Marker(startPoint, { icon: startIcon })
             map.addOverlay(startMarker)
 
             let endPoint = new window.BMapGL.Point(arr2.lon, arr2.lat)
@@ -48,11 +49,28 @@ export default memo(function Detail() {
             })
 
             // eslint-disable-next-line no-undef
-            let endMarker = new window.BMapGL.Marker(endPoint,{icon:endIcon})
+            let endMarker = new window.BMapGL.Marker(endPoint, { icon: endIcon })
             map.addOverlay(endMarker)
+            //连接路线图
+            let trackPoint = [];
+            for (let i = 0; i < pos.length; i++) {
+                let point = pos[i]
+                trackPoint.push(new window.BMapGL.Point(point.lon, point.lat))
+            }
+            let pol = new window.BMapGL.Polyline(trackPoint, { strokeColor: "blue" })
+            map.addOverlay(pol)
+            map.centerAndZoom(endPoint, 11)
+            let trackArea = [];
+            for (let i = 0; i < area.length; i++) {
+                let ar = area[i]
+                trackArea.push(new window.BMapGL.Point(ar.lon, ar.lat))
+            }
+            let gon = new window.BMapGL.Polygon(trackArea, { strokeColor: "blue", fillColor: "pink",strokeWeight:2, strokeOpacity: 0.2 })
+            map.addOverlay(gon)
+
 
         }
-        
+
         setBdmap(map)
 
     }
