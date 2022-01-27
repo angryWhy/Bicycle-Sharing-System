@@ -3,6 +3,7 @@ import { Card, Table, Button, Form, Select, Row, Col, DatePicker, Modal } from '
 import 'moment/locale/zh-cn';
 import locale from 'antd/lib/date-picker/locale/zh_CN';
 import axios from 'axios';
+
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 export default memo(function Order() {
@@ -124,7 +125,7 @@ export default memo(function Order() {
                 title:"提示",
                 content:"请选择一条信息"
             })
-        }
+        }   
     }
     return <div>
         <Card>
