@@ -1,7 +1,6 @@
 import React, { memo, useEffect, useState } from 'react';
 import { Card, Table, Button, Form, Select, Row, Col, DatePicker, Modal } from 'antd';
 import 'moment/locale/zh-cn';
-import BaseForm from "../../components/BaseForm/index"
 import locale from 'antd/lib/date-picker/locale/zh_CN';
 import axios from 'axios';
 
@@ -149,10 +148,7 @@ export default memo(function Order() {
             })
         }   
     }
-    return (<div>
-        
-        <BaseForm formList={formList}/>
-       
+    return <div>
         <Card>
             <Form>
                 <Row>
@@ -216,5 +212,5 @@ export default memo(function Order() {
                 </Form.Item>
             </Form>
         </Modal>
-    </div>);
+    </div>;
 });

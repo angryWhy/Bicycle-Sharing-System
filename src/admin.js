@@ -6,6 +6,7 @@ import AntdButton from './pages/order/index';
 import { Row,Col } from 'antd';
 import "./assets/css/app.less"
 import 'antd/dist/antd.min.css'
+import Detail from "./components/BaseForm/index";
 import { HashRouter } from 'react-router-dom';
 export default memo(function Admin() {
   return <div>
@@ -17,7 +18,11 @@ export default memo(function Admin() {
         <Col span={20} className='main'>
           <Header/>
           <Row className='content'>
-            <Col span={24}> <AntdButton/></Col>
+            <Col span={24}> 
+            
+            <AntdButton/>
+            
+            </Col>
           </Row>
           <Footer/>
         </Col>
