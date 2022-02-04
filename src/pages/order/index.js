@@ -4,6 +4,7 @@ import 'moment/locale/zh-cn';
 import BaseForm from "../../components/BaseForm/index"
 import locale from 'antd/lib/date-picker/locale/zh_CN';
 import axios from 'axios';
+import Etable from '../../components/Etable';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -150,9 +151,15 @@ export default memo(function Order() {
         }   
     }
     return (<div>
-        
+        {/* 上面的搜索和按钮 */}
         <BaseForm formList={formList}/>
+       {/* Etable */}
+       <Etable
        
+       
+       
+       
+       />
         <Card>
             <Form>
                 <Row>
