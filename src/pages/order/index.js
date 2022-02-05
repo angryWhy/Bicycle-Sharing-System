@@ -105,7 +105,6 @@ export default memo(function Order() {
         let selectKey=[index]
         setSelectItem(record)
         setSelect(selectKey)
-
     }
     const rowCheckSelection={
         type:"radio",
@@ -150,13 +149,29 @@ export default memo(function Order() {
             })
         }   
     }
+    const updateSelectItem = (selectedRowKeys,selectItem)=>{
+        setSelectItem(selectItem)
+        setSelect(selectedRowKeys) 
+    }
+    const updateSelectItemList = (selectedRowKeys,selectedRows) =>{
+            setSelect(selectedRowKeys)
+            setSelectItem(selectedRows)
+    }
+    const propsClick= (record,selectKey) =>{
+        setSelectItem(record)
+        setSelect(selectKey)
+    }
     return (<div>
         {/* 上面的搜索和按钮 */}
         <BaseForm formList={formList}/>
        {/* Etable */}
        <Etable
-       
-       
+       updateSelectItem={updateSelectItem}
+       columns={columns}
+       dataSource={data}
+       row_Selection="radio"
+       selectedRowKeys={selectedRowKeys}
+       updateSelectItemList={updateSelectItemList}
        
        
        />

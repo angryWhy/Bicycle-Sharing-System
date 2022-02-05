@@ -127,6 +127,7 @@ export default memo(function Basictable() {
         type:"radio",
         selectedRowKeys
     }
+    
     //复选框，选一堆
     const rowCheckSelection={
         type:"checkbox",
