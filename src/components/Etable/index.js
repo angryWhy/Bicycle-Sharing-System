@@ -4,11 +4,10 @@ import React, { memo } from 'react';
 export default memo(function Etable(props) {
     const { dataSource, columns,selectedRowKeys } = props
      const rowCheckSelection = {
-         type: "checkbox",
+         type: "radio",
          selectedRowKeys,
          onChange: (selectedRowKeys, selectedRows) => {
             props.updateSelectItem(selectedRowKeys,selectedRows)
-            
          }
      }
   
@@ -16,6 +15,10 @@ export default memo(function Etable(props) {
          let rowSelection = props.row_Selection
          if (rowSelection === "checkbox") {
             // props.updateSelectItemList(selectedRowKeys,selectedRows)
+            let selectedRowKeys=props.selectedRowKeys
+            let ids = props.ids
+            
+
          } else {
            let selectedRowKeys = [index]
             let selectItem = record
