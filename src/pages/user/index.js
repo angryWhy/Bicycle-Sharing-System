@@ -1,17 +1,21 @@
-import { DatePicker, Form, Input, Modal,Radio, Select } from 'antd';
+import { DatePicker, Form, Input, Modal,Radio, Select,Button} from 'antd';
 import axios from 'axios';
-import React, { memo, useState } from 'react';
+import React, { memo, useState,useRef,forwardRef  } from 'react';
 import BaseForm from '../../components/BaseForm';
 import Etable from '../../components/Etable';
 import 'moment/locale/zh-cn';
 import locale from 'antd/lib/date-picker/locale/zh_CN';
-export default memo(function User() {
+const {Option} = Select
+const { TextArea } = Input;
+const User = (props)=> {
     const [selectedRowKeys, setSelect] = useState()
+    const [show, setShow] = useState(false);
     const [selectItem, setSelectItem] = useState(null)
+    const contentRef = useRef();
     const params={
         page:1
     }
-    const {Option} = Select
+    
     const formList = [
         {
             type: "INPUT",
@@ -105,33 +109,45 @@ export default memo(function User() {
     const handleFilter = (params) =>{
         axios.requestList()
     }
-    return <div>
+    const handleOk= ()=>{
+        setShow(false)
+        console.log(contentRef.current.getFieldsValue(["userName","birth","status"]));
+        contentRef.current.resetFields()
+    }
+    const handleCancle = ()=>{
+        setShow(false)
+    }
+    const handleOperate =() =>{
+        console.log(selectItem);
+    }
+    return (<div>
         <BaseForm formList={formList} />
+        <Button type='primary' onClick={e=>{setShow(true)}}>创建员工</Button>
+        <Button type='primary' onClick={e=>{handleOperate()}} style={{marginLeft:"20px"}}>编辑员工</Button>
         <Etable columns={columns}
             dataSource={datasource}
             selectedRowKeys={selectedRowKeys}
             updateSelectItemList={updateSelectItemList}
             updateSelectItem={updateSelectItem}
         />
-        <Modal title="111"
-               visible={false}
-               onOk={e=>{}}
-               onCancel={e=>{}}
+        <Modal title="创建员工"
+               visible={show}
+               onOk={e=>{handleOk()}}
+               onCancel={e=>{handleCancle()}}
                >
-
+                < CreateForm ref={contentRef}/>
         </Modal>
-        <CreateForm/>
-    </div>;
-});
+    </div>);
+};
 
-const CreateForm = () =>{
+const CreateForm=forwardRef((props,ref) =>{
     const formLayout = {
         labelCol:{span:5},
-        wrapperCol:{span:10}
+        wrapperCol:{span:19}
     }
-    return(<>
-    <Form>
-        <Form.Item label="用户名" {...formLayout}>
+    return(
+    <Form  ref={ref}>
+        <Form.Item label="用户名" {...formLayout} name="userName">
             <Input type="text" placeholder='请输入用户名'/>
         </Form.Item>
         <Form.Item label="性别" {...formLayout}>
@@ -140,7 +156,7 @@ const CreateForm = () =>{
           <Radio value="2">女</Radio>
         </Radio.Group>
         </Form.Item>
-        <Form.Item label="状态" {...formLayout}>
+        <Form.Item label="状态" {...formLayout} name="status">
             <Select>
                 <Option value={1} >学习</Option >
                 <Option value={2} >娱乐</Option >
@@ -148,9 +164,13 @@ const CreateForm = () =>{
                 <Option value={4} >睡觉</Option >
             </Select>
         </Form.Item>
-        <Form.Item label="生日" {...formLayout} >
+        <Form.Item label="生日" {...formLayout} name="birth">
             <DatePicker locale={locale} />
         </Form.Item>
+        <Form.Item label="联系地址 "  {...formLayout} name="address">
+            <TextArea rows={4} />
+        </Form.Item>
     </Form>
-           </>)
-}
+           )
+})
+export default User
