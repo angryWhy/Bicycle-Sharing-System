@@ -113,9 +113,11 @@ const User = (props) => {
         axios.requestList()
     }
     const handleOk = () => {
-        
+        contentRef.current.resetFields(null)
         setShow(false)
-        
+        contentRef.current.resetFields(null)
+
+
     }
     const handleCancle = () => {
         
@@ -133,7 +135,6 @@ const User = (props) => {
             if (selectItem) {
                 setTitle("编辑员工")
                 setUserInfo(userInfo)
-             
                 setShow(true)
             }
         }
@@ -164,12 +165,11 @@ const User = (props) => {
 };
 
 const CreateForm = forwardRef((props, ref) => {
-    const {userInfo} = props
+    const {userInfo={}} = props
     const formLayout = {
         labelCol: { span: 5 },
         wrapperCol: { span: 19 }
     }
-    
     console.log(userInfo);
     return (
         <Form ref={ref}  autoComplete="off" >
