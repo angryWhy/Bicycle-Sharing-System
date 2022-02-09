@@ -69,6 +69,19 @@ export default memo(function Map() {
         let gon = new window.BMapGL.Polygon(trackArea, { strokeColor: "blue", fillColor: "pink",strokeWeight:2, strokeOpacity: 0.2 })
         map.addOverlay(gon)
 
+        let bike_list = data.bike_list
+        let bikeIcon = new window.BMapGL.Icon("/assets/bike.jpg", new window.BMapGL.Size(36, 42), {
+            imageSize: new window.BMapGL.Size(36, 42),
+            anchor: new window.BMapGL.Size(18, 42)
+        })
+        bike_list.forEach(item=>{
+            let p = item.split(",")
+            let ponit=new window.BMapGL.Point(p[0],p[1])
+            let bikeMarker = new window.BMapGL.Marker(ponit, { icon: bikeIcon })
+            map.addOverlay(bikeMarker)
+
+        })
+
 
 
 
