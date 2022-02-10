@@ -98,9 +98,6 @@ export default memo(function Order() {
             )
         }, []
     )
-    const handleConfirm= () =>{
-
-    }
     const onRowClick=(record,index)=>{
         let selectKey=[index]
         setSelectItem(record)
