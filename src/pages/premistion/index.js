@@ -1,4 +1,4 @@
-import { DatePicker, Form, Input, Modal, Radio, Select, Button, Card, Tree } from 'antd';
+import { DatePicker, Form, Input, Modal, Radio, Select, Button, Card, Tree, Transfer } from 'antd';
 import React, { memo, useEffect, useState, forwardRef, useRef } from 'react'
 import { formateDate } from "../../utils/format-Date"
 import 'moment/locale/zh-cn';
@@ -7,6 +7,8 @@ import locale from 'antd/lib/date-picker/locale/zh_CN';
 import Etable from "../../components/Etable/index"
 import axios from "axios"
 import config from "../../config/menuConfig"
+import zhCN from 'antd/es/locale/zh_CN';
+import { ConfigProvider } from 'antd'
 const { Option } = Select
 const { TextArea } = Input;
 const TreeNode = Tree.TreeNode;
@@ -15,10 +17,14 @@ const Index = memo(() => {
     const [menus, setMenus] = useState();
     const [show, setShow] = useState(false)
     const [preShow, setPreShow] = useState(false)
+    const [tranShow, settranShow] = useState(false)
     const [selectedRowKeys, setSelect] = useState()
+    const [targetKey, setTargetKey] = useState()
+    const [mockData, setMockData] = useState()
     const [selectItem, setSelectItem] = useState(null)
     const formRef = useRef()
     const subRef = useRef()
+    const roleRef = useRef()
     useEffect(() => {
         axios.get("./api/role/list.json").then(res => {
             console.log(res.data.result.menus);
@@ -28,6 +34,9 @@ const Index = memo(() => {
             })
             setData(newData)
             setMenus(res.data.result.item_list[0].menus)
+        })
+        axios.get("./api/role/user_list.json").then(res => {
+            getAuthUserList(res.data.result)
         })
     }, [])
     const updateSelectItem = (selectedRowKeys, selectItem) => {
@@ -51,6 +60,7 @@ const Index = memo(() => {
         else {
             setPreShow(true)
         }
+        //
     }
     const handlepreCan = () => {
         setPreShow(false)
@@ -59,10 +69,48 @@ const Index = memo(() => {
     }
     const handlepreok = () => {
         subRef.current.getFieldsValue()
-        console.log(subRef.current.getFieldsValue(),menus);
+        console.log(subRef.current.getFieldsValue(), menus);
         setPreShow(false)
         subRef.current.resetFields()
 
+    }
+    const handleTran = () => {
+        settranShow(true)
+    }
+    const handleTranCan = () => {
+        settranShow(false)
+    }
+    const handleTranok = () => {
+        let data={}
+        data.user_ids=targetKey
+        //操作id
+        data.user_id=selectItem.id
+        //网络请求
+        settranShow(false)
+    }
+    const setSubTargetKey = (targetKeys) =>{
+        setTargetKey(targetKeys)
+    }
+    //目标用户
+    const getAuthUserList = (dataSource) => {
+        const mockData = []
+        const targetkeys = []
+        if (dataSource && dataSource.length > 0) {
+            for (let i = 0; i < dataSource.length; i++) {
+                const data = {
+                    key: dataSource[i].user_id,
+                    title: `${dataSource[i].user_name}`,
+                    status: dataSource[i].status,
+                }
+                if (data.status === 1) {
+                    targetkeys.push(data.key)
+                } 
+                    mockData.push(data)
+                
+            }
+        }
+        setMockData(mockData)
+        setTargetKey(targetkeys)
     }
     const columns = [
         {
@@ -98,7 +146,7 @@ const Index = memo(() => {
             <Card>
                 <Button type="primary" onClick={e => { setShow(true) }} >创建角色</Button>
                 <Button type="primary" style={{ marginLeft: "20px" }} onClick={e => { handlePremission() }}>设置权限</Button>
-                <Button type="primary" style={{ marginLeft: "20px" }}>用户授权</Button>
+                <Button type="primary" style={{ marginLeft: "20px" }} onClick={e => { handleTran() }}>用户授权</Button>
             </Card>
             <Card>
                 <Etable columns={columns} dataSource={data} row_Selection="radio" selectedRowKeys={selectedRowKeys} updateSelectItem={updateSelectItem} />
@@ -108,6 +156,9 @@ const Index = memo(() => {
             </Modal>
             <Modal title="编辑角色" visible={preShow} onCancel={e => { handlepreCan() }} onOk={e => { handlepreok() }}>
                 <SubForm detail={selectItem} ref={subRef} menuInfo={menus} patchMenuInfo={(checkedKeys) => { setMenus(checkedKeys) }} />
+            </Modal>
+            <Modal title="用户授权" visible={tranShow} onCancel={e => { handleTranCan() }} onOk={e => { handleTranok() }}>
+                <RoleAuthForm targetkeys={targetKey} mockData={mockData} ref={roleRef} setkey={setSubTargetKey} />
             </Modal>
         </div>
     )
@@ -170,7 +221,7 @@ const SubForm = forwardRef((props, ref) => {
     return (<div>
         <Form layout='horizontal' ref={ref}>
             <Form.Item label="角色名称" {...fromLayout} name="name" initialValue={detail.role_name} >
-                <Input disabled  />
+                <Input disabled />
             </Form.Item>
             <Form.Item label="状态" {...fromLayout} initialValue="2" name="control">
                 <Select  >
@@ -178,7 +229,7 @@ const SubForm = forwardRef((props, ref) => {
                     <Option value="2" >关闭</Option >
                 </Select>
             </Form.Item>
-            
+
             <Tree
                 checkable
                 defaultExpandAll
@@ -189,8 +240,33 @@ const SubForm = forwardRef((props, ref) => {
                     {renderTree(config)}
                 </TreeNode>
             </Tree>
-            
+
         </Form>
     </div>)
+})
+const RoleAuthForm = forwardRef((props, ref) => {
+    const {mockData,targetkeys,setkey } = props
+    const filterOption =()=>{
+        
+    }
+    const handleChange= ()=>{
+
+    }
+    return (<div>
+        <ConfigProvider locale={zhCN}>
+        <Transfer
+            listStyle={{width:200,height:400}}
+            dataSource={mockData}
+            titles={["待选用户","已选用户"]}
+            showSearch
+            searchPlaceholder="请输入用户名"
+            filterOption={e=>{filterOption()}}
+            targetKeys={targetkeys}
+            render={item => item.title}
+            onChange={(targetKeys)=>{setkey(targetKeys)}}
+        />
+        </ConfigProvider>
+    </div>)
+
 })
 export default Index
